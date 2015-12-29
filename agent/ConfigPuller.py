@@ -1,0 +1,2 @@
+class ConfigPuller(object):
+    pass
