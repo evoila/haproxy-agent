@@ -1,3 +1,3 @@
 import os
 
-os.system('virtualenv/bin/python agent/ConfigPusher.py')
+os.system('virtualenv/bin/python agent/HAHQConfigPusher.py')

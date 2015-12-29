@@ -2,3 +2,4 @@ virtualenv
 .idea
 config.py
 test.cfg
+*.pyc
