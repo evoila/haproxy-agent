@@ -1,0 +1,2 @@
+class HAHQConfigPuller(object):
+    pass

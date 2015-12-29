@@ -1,2 +1,0 @@
-class ConfigPusher(object):
-    pass
