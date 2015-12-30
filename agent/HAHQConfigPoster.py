@@ -1,3 +1,5 @@
+import requests
+
 import config
 from agent.HAHQConfigurator import HAHQConfigurator
 
@@ -7,8 +9,7 @@ class HAHQConfigPoster(object):
         self.config_data = HAHQConfigurator(config_string=config_string).get_config_data()
 
     def push_config(self, url, token):
-        # TODO push config to server
-        print self.config_data
+        requests.post(url, data=self.config_data)
 
 
 if __name__ == "__main__":
