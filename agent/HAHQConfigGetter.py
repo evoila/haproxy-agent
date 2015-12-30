@@ -1,10 +1,12 @@
+import requests
+
 import config
 from agent.HAHQConfigurator import HAHQConfigurator
 
 
 class HAHQConfigGetter(object):
     def __init__(self, url, token):
-        self.config_data = {"config": [{"backend": [{"_name": "servers"}]},{"backend": [{"_name": "mybackend"},{"mode": "tcp"},{"stick-table": "type ip size 20k peers mypeers"}]},{"peers": [{"_name": "mypeers"},{"peer": "haproxy1 192.168.0.1:1024"},{"peer": "haproxy2 192.168.0.2:1024"},{"peer": "haproxy3 10.2.0.1:1024"}]}],}
+        self.config_data = requests.get(url).json()
         self.config_string = HAHQConfigurator(config_data=self.config_data).get_config_string()
 
     def save_config(self):
