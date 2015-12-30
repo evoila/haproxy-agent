@@ -15,6 +15,6 @@ if __name__ == "__main__":
     with open(config.HA_PROXY_CONFIG_PATH, 'r') as config_file:
         config_pusher = HAHQConfigPoster(config_file.read())
         config_pusher.push_config(
-            config.SERVER_URL + ':' + config.SERVER_PORT + '/config/' + config.AGENT_ID + '/',
+            config.SERVER_URL,
             config.AGENT_TOKEN
         )

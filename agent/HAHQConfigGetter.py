@@ -18,7 +18,7 @@ class HAHQConfigGetter(object):
 
 if __name__ == "__main__":
     config_getter = HAHQConfigGetter(
-        config.SERVER_URL + ':' + config.SERVER_PORT + '/config/' + config.AGENT_ID + '/',
+        config.SERVER_URL,
         config.AGENT_TOKEN
     )
     config_getter.save_config()
