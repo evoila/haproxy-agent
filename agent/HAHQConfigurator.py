@@ -1,5 +1,12 @@
 class HAHQConfigurator(object):
+    """
+    this class helps converting a config dict to a string which has the format of the HAProxy config file.
+    convertion work bi-directional
+    """
     class HAHQConfiguratorException(Exception):
+        """
+        this Exception is thrown in for all kind of errors, regarding the convertion
+        """
         pass
 
     SECTION_KEYWORDS = [
@@ -14,8 +21,19 @@ class HAHQConfigurator(object):
         'namespace_list',
         'resolvers',
     ]
+    """a list of keywords indicating the begin of a section in the HAProxy config file"""
 
     def __init__(self, config_data=None, config_string=None):
+        """
+        a HAHQConfigurator can be initialized either with a dict describing the config, or a string formatted like the
+        config file.
+
+        :param config_data: dict with config data
+        :param config_string: string in config file format
+        :raises HAHQConfigurator.HAHQConfiguratorException: is thrown in case neither config data nor config string is supplied
+        """
+        if not config_data and not config_string:
+            raise HAHQConfigurator.HAHQConfiguratorException('either config data or config string has to be supplied')
         self.config_data = config_data if config_data else None
         self.config_string = config_string if config_string else None
 
@@ -35,30 +53,53 @@ class HAHQConfigurator(object):
         return not self.__eq__(other)
 
     def get_config_string(self):
+        """
+        returns the config as string and converts it to string, in case it's only available as a dict
+
+        :return: config string
+        """
         if not self.config_string:
             self.__build_config_string()
 
         return self.config_string
 
     def get_config_data(self):
+        """
+        returns the config data as a dict and converts it to dict, in case it's only available as a string
+
+        :return: config data
+        """
         if not self.config_data:
             self.__build_config_data()
 
         return self.config_data
 
     def __build_config_string(self):
+        """
+        builds the config string from config data
+
+        :raises HAHQConfigurator.HAHQConfiguratorException: is thrown in case config data isn't set
+        """
         if not self.config_data:
             raise HAHQConfigurator.HAHQConfiguratorException('no config data set')
 
-        # TODO: build config string from data dict
+        self.config_string = ''
+
+        for section in self.config_data['config']:
+            section_name = section.keys()[0]
+            # s += section_name + ((' ' + section[section_name]) )
 
     def __build_config_data(self):
+        """
+        builds the config data from config string
+
+        :raises HAHQConfigurator.HAHQConfiguratorException: is thrown in case config string isn't set
+        """
         if not self.config_string:
             raise HAHQConfigurator.HAHQConfiguratorException('no config string set')
 
-        self.config_data = []
+        self.config_data = {'config': []}
 
-        section_key = None
         section = None
 
         for line in self.config_string.split('\n'):
@@ -66,14 +107,19 @@ class HAHQConfigurator(object):
 
             if len(words) > 0 and words[0][0] != '#':
                 if words[0] in self.SECTION_KEYWORDS:
-                    if section and section_key:
-                        self.config_data.append({section_key: section})
+                    if section:
+                        self.config_data['config'].append(section)
 
-                    section_key = words[0]
-                    section = [{'_name': ' '.join(words[1:])}]
+                    section = {
+                        'section': {
+                            'type': words[0],
+                            'name': ' '.join(words[1:]),
+                        },
+                        'values': [],
+                    }
                 else:
-                    if section_key:
-                        section.append({ words[0]: ' '.join(words[1:])})
+                    if section:
+                        section['values'].append(' '.join(words))
 
-        if section and section_key:
-            self.config_data.append({section_key: section})
+        if section:
+            self.config_data['config'].append(section)
