@@ -23,10 +23,8 @@ class HAHQConfigGetter(object):
         """
         saves the converted config string to the HAProxy config file
         """
-        print self.config_string
-        # TODO: save file
-        # with open(config.HA_PROXY_CONFIG_PATH, 'w') as config_file:
-        #     config_file.write(self.config_string)
+        with open(config.HA_PROXY_CONFIG_PATH, 'w') as config_file:
+            config_file.write(self.config_string)
 
 
 if __name__ == "__main__":

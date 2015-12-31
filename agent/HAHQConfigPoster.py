@@ -24,7 +24,6 @@ class HAHQConfigPoster(object):
         :param url: url of the server
         :param token: token for authentication
         """
-        print self.config_data
         requests.post(url, json=self.config_data)
 
 

@@ -86,8 +86,15 @@ class HAHQConfigurator(object):
         self.config_string = ''
 
         for section in self.config_data['config']:
-            section_name = section.keys()[0]
-            # s += section_name + ((' ' + section[section_name]) )
+            self.config_string += section['section']['type'] + ' ' + section['section']['name'] + '\n'
+
+            for value in section['values']:
+                self.config_string += '\t' + value + '\n'
+
+            self.config_string += '\n'
+
+        self.config_string = self.config_string[:(len(self.config_string) - 2)]
+
 
     def __build_config_data(self):
         """
