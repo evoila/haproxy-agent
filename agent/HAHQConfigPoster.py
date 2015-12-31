@@ -9,7 +9,7 @@ class HAHQConfigPoster(object):
         self.config_data = HAHQConfigurator(config_string=config_string).get_config_data()
 
     def push_config(self, url, token):
-        requests.post(url, data=self.config_data)
+        requests.post(url, json=self.config_data)
 
 
 if __name__ == "__main__":
