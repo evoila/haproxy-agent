@@ -14,4 +14,4 @@ For example Ubuntu:
 
 To install further requirements and get everything up and running, just run the setup.py script.
 
->sudo python setup.py
+>sudo ./setup
