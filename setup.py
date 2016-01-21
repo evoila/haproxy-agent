@@ -9,4 +9,4 @@ os.system('pip install virtualenv')
 os.system('virtualenv virtualenv')
 
 # install requests
-os.system('virtualenv/bin/pip install requests')
+os.system('virtualenv/bin/pip install -r requirements.txt')
