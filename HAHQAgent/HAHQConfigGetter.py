@@ -16,7 +16,9 @@ class HAHQConfigGetter(object):
         :param url: the server url the data is retrieved from
         :param token: a token for authentication
         """
-        self.config_data = requests.get(url).json()
+        response_data = requests.get(url).json()
+        self.config_data = {'config': response_data['config']}
+        self.config_timestamp = response_data['timestamp']
         self.config_string = HAHQConfigurator(config_data=self.config_data).get_config_string()
 
     def save_config(self):

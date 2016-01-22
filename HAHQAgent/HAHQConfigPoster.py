@@ -1,4 +1,5 @@
 import requests
+import os
 
 import config
 from HAHQConfigurator import HAHQConfigurator
@@ -9,17 +10,14 @@ class HAHQConfigPoster(object):
     this is a light helper class, to send the config data to a server specified in the config.py file, after converting
     it to json from the HAProxy config file, using the HAHQConfigurator class
     """
-    def __init__(self, config_string=None, config_file_path=None):
+    def __init__(self, config_file_path):
         """
-        converts the given string data or file to a config dict
+        converts the given file to a config dict
 
-        :param config_string: the HAProxy config file as string
         :param config_file_path: the HAProxy config file path
         """
-        if config_file_path:
-            config_string = self.stringify_file(config_file_path)
-
-        self.config_data = HAHQConfigurator(config_string=config_string).get_config_data()
+        self.config_timestamp = os.stat(config_file_path).st_mtime
+        self.config_data = HAHQConfigurator(config_string=self.stringify_file(config_file_path)).get_config_data()
 
     def post_config(self, url, token):
         """
@@ -28,7 +26,9 @@ class HAHQConfigPoster(object):
         :param url: url of the server
         :param token: token for authentication
         """
-        requests.post(url, json=self.config_data)
+        request_data = self.config_data
+        request_data['timestamp'] = self.config_timestamp
+        requests.post(url, json=request_data)
 
     def stringify_file(self, file):
         """

@@ -1,3 +1,5 @@
+import os
+
 from HAHQMQTTClient import HAHQMQTTClient
 from HAHQFileWatcherDaemon import HAHQFileWatcherDaemon
 from HAHQConfigGetter import HAHQConfigGetter
@@ -46,7 +48,8 @@ class HAHQAgent(object):
 
     def get_config(self, client=None, userdata=None, msg=None):
         """
-        retrieves the current config from the backend
+        retrieves the current config from the backend. In case the local config is newer than the one retrieved by the
+        backend, the local config is pushed to the server.
 
         params are just dummies, so that this method can be called as an MQTT callback
         """
@@ -54,7 +57,18 @@ class HAHQAgent(object):
             self.server_url,
             self.agent_token
         )
-        config_getter.save_config()
+
+        config_poster = HAHQConfigPoster(self.config_file_path)
+
+        if config_getter.config_timestamp > config_poster.config_timestamp:
+            if config_getter.config_data != config_poster.config_data:
+                config_getter.save_config()
+        else:
+            if config_getter.config_data != config_poster.config_data:
+                config_poster.post_config(
+                    self.server_url,
+                    self.agent_token
+                )
 
     def __start_mqtt_client_loop(self):
         """
