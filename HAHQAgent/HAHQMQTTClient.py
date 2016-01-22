@@ -5,7 +5,7 @@ class HAHQMQTTClient(object):
     """
     this is a wrapper class for the paho MQTT python client, for the purposes of the HAProxyHQ/Agent
     """
-    def __init__(self, host, port, topic, func_on_message):
+    def __init__(self, client_id, host, port, topic, func_on_message):
         """
         initializes the client with required information and a callback function
 
@@ -17,7 +17,7 @@ class HAHQMQTTClient(object):
         self.host = host
         self.port = port
         self.topic = topic
-        self.client = mqtt.Client()
+        self.client = mqtt.Client(client_id=client_id)
         self.client.on_connect = self.on_connect
         self.client.on_message = func_on_message
 
