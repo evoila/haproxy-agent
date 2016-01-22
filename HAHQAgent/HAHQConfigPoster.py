@@ -17,7 +17,12 @@ class HAHQConfigPoster(object):
         :param config_file_path: the HAProxy config file path
         """
         self.config_timestamp = os.stat(config_file_path).st_mtime
-        self.config_data = HAHQConfigurator(config_string=self.stringify_file(config_file_path)).get_config_data()
+        self.config_string = self.stringify_file(config_file_path)
+
+        if self.config_string:
+            self.config_data = HAHQConfigurator(config_string=self.config_string).get_config_data()
+        else:
+            self.config_data = {'config': []}
 
     def post_config(self, url, token):
         """

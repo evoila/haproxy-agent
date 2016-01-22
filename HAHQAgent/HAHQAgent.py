@@ -1,5 +1,3 @@
-import os
-
 from HAHQMQTTClient import HAHQMQTTClient
 from HAHQFileWatcherDaemon import HAHQFileWatcherDaemon
 from HAHQConfigGetter import HAHQConfigGetter
