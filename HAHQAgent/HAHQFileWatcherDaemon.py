@@ -9,6 +9,6 @@ class HAHQFileWatcherDaemon(Thread):
     the new config to the HAProxyHQ backend.
     """
     def __init__(self, config_file_path):
-        wc = WhenChanged([config_file_path], './../agent --push')
-        Thread.__init__(self, target=wc)
+        wc = WhenChanged([config_file_path], './agent --push')
+        Thread.__init__(self, target=wc.run)
         self.setDaemon(True)
