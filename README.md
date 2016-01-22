@@ -27,3 +27,7 @@ The agent can be started by running
 Once the agent is running, it will be updated by the HAProxyHQ. In case you edit the config file manually, the agent will detect file changes and push them to the server. If this doesn't work for some reason, you can manually push the new config to the server by calling
 
 >./agent --push
+
+also it's possible to manually pull the current config
+
+>./agent --pull

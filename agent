@@ -23,6 +23,9 @@ if __name__ == '__main__':
         if '--push' in argv:
             agent.post_config()
             print 'HAProxyHQ/Agent pushed to server'
+        elif '--pull' in argv:
+            agent.get_config()
+            print 'HAProxyHQ/Agent pulled from server'
         else:
             print 'HAProxyHQ/Agent started'
             agent.start_agent()
