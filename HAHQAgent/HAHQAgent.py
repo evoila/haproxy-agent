@@ -3,6 +3,7 @@ from HAHQFileWatcherDaemon import HAHQFileWatcherDaemon
 from HAHQConfigGetter import HAHQConfigGetter
 from HAHQConfigPoster import HAHQConfigPoster
 
+
 class HAHQAgent(object):
     """
     this class wraps all the functionality of the HAProxyHQ/Agent into one class
@@ -23,7 +24,7 @@ class HAHQAgent(object):
         :param agent_token: the token the agents needs for authentication
         :param mqtt_broker_adress: the adress if the MQTT broker
         :param mqtt_broker_port: the MQTT brokers port
-        :param mqtt_topi: the MQTT topic
+        :param mqtt_topic: the MQTT topic
         :param config_file_path: the path to the config file
         """
         self.server_url = server_url

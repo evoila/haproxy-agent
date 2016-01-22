@@ -1,5 +1,6 @@
 import paho.mqtt.client as mqtt
 
+
 class HAHQMQTTClient(object):
     """
     this is a wrapper class for the paho MQTT python client, for the purposes of the HAProxyHQ/Agent

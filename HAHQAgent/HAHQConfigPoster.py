@@ -1,7 +1,6 @@
 import requests
 import os
 
-import config
 from HAHQConfigurator import HAHQConfigurator
 
 

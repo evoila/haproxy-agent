@@ -30,7 +30,8 @@ class HAHQConfigurator(object):
 
         :param config_data: dict with config data
         :param config_string: string in config file format
-        :raises HAHQConfigurator.HAHQConfiguratorException: is thrown in case neither config data nor config string is supplied
+        :raises HAHQConfigurator.HAHQConfiguratorException: is thrown in case neither config data nor config string is
+        supplied
         """
         if not config_data and not config_string:
             raise HAHQConfigurator.HAHQConfiguratorException('either config data or config string has to be supplied')
@@ -94,7 +95,6 @@ class HAHQConfigurator(object):
             self.config_string += '\n'
 
         self.config_string = self.config_string[:(len(self.config_string) - 2)]
-
 
     def __build_config_data(self):
         """
