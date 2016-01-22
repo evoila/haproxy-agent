@@ -1,11 +1,11 @@
 class HAHQConfigurator(object):
     """
-    this class helps converting a config dict to a string which has the format of the HAProxy config file.
-    convertion work bi-directional
+    This class helps converting a config dict to a string which has the format of the HAProxy config file.
+    Converting works bi-directional.
     """
     class HAHQConfiguratorException(Exception):
         """
-        this Exception is thrown in for all kind of errors, regarding the convertion
+        this Exception is thrown for all kind of errors regarding the conversion
         """
         pass
 
