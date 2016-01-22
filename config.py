@@ -14,6 +14,8 @@ MQTT_BROKER_PORT = '1883'
 # the path of the HAProxy config, which the agent will manage
 HA_PROXY_CONFIG_PATH = ''
 
+# the MQTT topic the agent will subscribe to. There should be no need to change this!
+MQTT_TOPIC = '/haproxyhq/agents/' + AGENT_ID
 
 # complete URL. There should be no need to change this!
 SERVER_URL = SERVER_ADDRESS + ':' + SERVER_PORT + '/' + SERVER_API_ENDPOINT + '/' + AGENT_ID + '/'

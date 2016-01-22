@@ -1,7 +1,7 @@
 import paho.mqtt.client as mqtt
 
 class HAHQMQTTClient(object):
-    def _init_mqtt_client(self, host, port, topic, func_on_message):
+    def __init__(self, host, port, topic, func_on_message):
         self.host = host
         self.port = port
         self.topic = ''

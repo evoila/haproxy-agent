@@ -21,7 +21,7 @@ class HAHQConfigPoster(object):
 
         self.config_data = HAHQConfigurator(config_string=config_string).get_config_data()
 
-    def push_config(self, url, token):
+    def post_config(self, url, token):
         """
         sends the converted data to the server
 
@@ -39,11 +39,3 @@ class HAHQConfigPoster(object):
         """
         with open(file, 'r') as config_file:
             return config_file.read()
-
-
-if __name__ == "__main__":
-    config_pusher = HAHQConfigPoster(config_file_path=config.HA_PROXY_CONFIG_PATH)
-    config_pusher.push_config(
-        config.SERVER_URL,
-        config.AGENT_TOKEN
-    )

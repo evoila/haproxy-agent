@@ -1,0 +1,31 @@
+#!virtualenv/bin/python
+
+# This script can be executed from the terminal, to start the agent, or push the current config
+
+from sys import argv
+
+import config
+
+from HAHQAgent.HAHQAgent import HAHQAgent
+
+if __name__ == '__main__':
+    try:
+        agent = HAHQAgent(
+            config.SERVER_URL,
+            config.AGENT_ID,
+            config.AGENT_TOKEN,
+            config.MQTT_BROKER_ADRESS,
+            config.MQTT_BROKER_PORT,
+            config.MQTT_TOPIC,
+            config.HA_PROXY_CONFIG_PATH
+        )
+
+        if '--push' in argv:
+            agent.post_config()
+            print 'HAProxyHQ/Agent pushed to server'
+        else:
+            print 'HAProxyHQ/Agent started'
+            agent.start_agent()
+    except KeyboardInterrupt:
+        print 'HAProxyHQ/Agent stopped'
+        exit(0)

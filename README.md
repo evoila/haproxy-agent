@@ -15,3 +15,13 @@ For example Ubuntu:
 To install further requirements and get everything up and running, just run the setup.py script.
 
 >sudo ./setup
+
+##Usage
+
+The agent can be started by running
+
+>./agent
+
+Once the agent is running, it will be updated by the HAProxyHQ. In case you edit the config file manually, the agent will detect file changes and push them to the server. If this doesn't work for some reason, you can manually push the new config to the server by calling
+
+>./agent --push
