@@ -1,7 +1,7 @@
 import requests
 
 import config
-from HAHQAgent.HAHQConfigurator import HAHQConfigurator
+from HAHQConfigurator import HAHQConfigurator
 
 
 class HAHQConfigPoster(object):

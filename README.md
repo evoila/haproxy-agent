@@ -16,6 +16,8 @@ To install further requirements and get everything up and running, just run the 
 
 >sudo ./setup
 
+Then you'll have to edit the config.py file. Here you'll find further instruction on how to configure the HAProxyHQ/Agent.
+
 ##Usage
 
 The agent can be started by running

@@ -44,9 +44,11 @@ class HAHQAgent(object):
             self.agent_token
         )
 
-    def get_config(self):
+    def get_config(self, client=None, userdata=None, msg=None):
         """
         retrieves the current config from the backend
+
+        params are just dummies, so that this method can be called as an MQTT callback
         """
         config_getter = HAHQConfigGetter(
             self.server_url,
@@ -58,7 +60,7 @@ class HAHQAgent(object):
         """
         starts the MQTT client in a loop
         """
-        HAHQMQTTClient(self.mqtt_broker_adress, self.mqtt_broker_port, self.mqtt_topic, self.get_config)
+        HAHQMQTTClient(self.mqtt_broker_adress, self.mqtt_broker_port, self.mqtt_topic, self.get_config).connect()
 
     def __start_file_watcher_daemon(self):
         """
@@ -67,6 +69,9 @@ class HAHQAgent(object):
         HAHQFileWatcherDaemon(self.config_file_path).start()
 
     def start_agent(self):
+        """
+        starts the agent. This is blocking!
+        """
         self.post_config()
         self.__start_file_watcher_daemon()
         self.__start_mqtt_client_loop()
