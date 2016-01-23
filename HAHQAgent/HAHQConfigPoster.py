@@ -31,7 +31,7 @@ class HAHQConfigPoster(object):
         :param token: token for authentication
         """
         request_data = self.config_data
-        request_data['timestamp'] = self.config_timestamp
+        request_data['configTimestamp'] = self.config_timestamp
         requests.post(url, json=request_data)
 
     def stringify_file(self, file):

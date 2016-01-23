@@ -54,7 +54,8 @@ class HAHQAgent(object):
         """
         config_getter = HAHQConfigGetter(
             self.server_url,
-            self.agent_token
+            self.agent_token,
+            self.config_file_path
         )
 
         config_poster = HAHQConfigPoster(self.config_file_path)
@@ -73,7 +74,7 @@ class HAHQAgent(object):
         """
         starts the MQTT client in a loop
         """
-        HAHQMQTTClient('agent_' + self.agent_id ,self.mqtt_broker_adress, self.mqtt_broker_port, self.mqtt_topic, self.get_config).connect()
+        HAHQMQTTClient('haproxyhq/agent/' + self.agent_id ,self.mqtt_broker_adress, self.mqtt_broker_port, self.mqtt_topic, self.get_config).connect()
 
     def __start_file_watcher_daemon(self):
         """
