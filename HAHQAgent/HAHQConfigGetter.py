@@ -31,4 +31,4 @@ class HAHQConfigGetter(object):
         with open(self.config_file_path, 'w') as config_file:
             config_file.write(self.config_string)
 
-
+        os.system('service haproxy reload')
