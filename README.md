@@ -18,6 +18,7 @@ To install further requirements and get everything up and running, just run the 
 
 Then you'll have to edit the config.py file. Here you'll find further instruction on how to configure the HAProxyHQ/Agent.
 
+
 ##Usage
 
 The agent needs privileges to edit the HAProxy config file, which usually is found in /etc/haproxy/, and reload the HAProxy service whenever a new config is rolled out. Therefore it's required to either run the agent as root, or as another user with these privileges. The agent can be started by running
@@ -30,4 +31,4 @@ Once the agent is running, it will be updated by the HAProxyHQ. In case you edit
 
 also it's possible to manually pull the current config
 
->./agent --pull
+>sudo ./agent --pull
