@@ -1,5 +1,5 @@
 import config
-from HAHQAgent.HAHQAgent import HAHQAgent
+import HAHQAgent
 
 
 class HAHQConfiguredAgentInstance(object):
@@ -7,7 +7,7 @@ class HAHQConfiguredAgentInstance(object):
     this class is a wrapper for an instance of a HAHQAgent with the config from the config.py
     """
     def __init__(self):
-        self.agent = HAHQAgent(
+        self.agent = HAHQAgent.HAHQAgent(
             config.SERVER_URL,
             config.AGENT_ID,
             config.AGENT_TOKEN,

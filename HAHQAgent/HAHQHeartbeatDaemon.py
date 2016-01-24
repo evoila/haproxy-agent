@@ -13,4 +13,4 @@ class HAHQHeartbeatDaemon(Thread):
     def run(self):
         while(True):
             self.agent.post_config()
-            time.sleep(1000)
+            time.sleep(60)
