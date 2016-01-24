@@ -1,5 +1,6 @@
 import requests
 import os
+import time
 
 from HAHQConfigurator import HAHQConfigurator
 
@@ -32,6 +33,9 @@ class HAHQConfigPoster(object):
         """
         request_data = self.config_data
         request_data['configTimestamp'] = self.config_timestamp
+        request_data['agentTimestamp'] = time.time()
+        if os.popen('service haproxy status').read() == 'haproxy is running.':
+            request_data['haproxyTimestamp'] = request_data['agentTimestamp']
         requests.post(url, json=request_data)
 
     def stringify_file(self, file):
