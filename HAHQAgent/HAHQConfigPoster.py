@@ -21,7 +21,7 @@ class HAHQConfigPoster(object):
         if self.config_string:
             self.config_data = HAHQConfigurator(config_string=self.config_string).get_config_data()
         else:
-            self.config_data = {'config': []}
+            self.config_data = {'configHolder': []}
 
     def post_config(self, url, token):
         """

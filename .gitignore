@@ -1,5 +1,5 @@
 virtualenv
 .idea
-config.py
 test.cfg
+config.py
 *.pyc
