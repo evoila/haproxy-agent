@@ -5,7 +5,7 @@ from HAHQAgent.HAHQConfiguredAgentInstance import HAHQConfiguredAgentInstance
 
 
 class HAHQHeartbeatDaemon(Thread):
-    def __init__(self, config_file_path):
+    def __init__(self):
         Thread.__init__(self)
         self.setDaemon(True)
         self.agent = HAHQConfiguredAgentInstance()
