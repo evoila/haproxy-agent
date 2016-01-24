@@ -8,9 +8,12 @@ import config
 
 from HAHQAgent.HAHQAgent import HAHQAgent
 
-if __name__ == '__main__':
-    try:
-        agent = HAHQAgent(
+class HAHQAgentInstance(object):
+    """
+    this class is a wrapper for an instance of a HAHQAgent with the config from the config.py
+    """
+    def __init__(self):
+        self.agent = HAHQAgent(
             config.SERVER_URL,
             config.AGENT_ID,
             config.AGENT_TOKEN,
@@ -20,14 +23,37 @@ if __name__ == '__main__':
             config.HA_PROXY_CONFIG_PATH
         )
 
+    def start_agent(self):
+        """
+        starts the agent
+        """
+        print 'HAProxyHQ/Agent started'
+        self.agent.start_agent()
+
+    def get_config(self):
+        """
+        gets the config
+        """
+        self.agent.get_config()
+        print 'HAProxyHQ/Agent pulled from server'
+
+    def post_config(self):
+        """
+        posts the config
+        """
+        self.agent.post_config()
+        print 'HAProxyHQ/Agent pushed to server'
+
+
+if __name__ == '__main__':
+    try:
+        agent = HAHQAgentInstance()
+
         if '--push' in argv:
             agent.post_config()
-            print 'HAProxyHQ/Agent pushed to server'
         elif '--pull' in argv:
             agent.get_config()
-            print 'HAProxyHQ/Agent pulled from server'
         else:
-            print 'HAProxyHQ/Agent started'
             agent.start_agent()
     except KeyboardInterrupt:
         print 'HAProxyHQ/Agent stopped'
