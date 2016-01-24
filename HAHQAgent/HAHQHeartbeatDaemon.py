@@ -1,7 +1,7 @@
 from threading import Thread
 import time
 
-from HAHQAgent.HAHQConfiguredAgentInstance import HAHQConfiguredAgentInstance
+from HAHQConfiguredAgentInstance import HAHQConfiguredAgentInstance
 
 
 class HAHQHeartbeatDaemon(Thread):

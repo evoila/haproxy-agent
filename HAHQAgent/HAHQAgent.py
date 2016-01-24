@@ -1,4 +1,4 @@
-from HAHQAgent.HAHQHeartbeatDaemon import HAHQHeartbeatDaemon
+from HAHQHeartbeatDaemon import HAHQHeartbeatDaemon
 from HAHQMQTTClient import HAHQMQTTClient
 from HAHQFileWatcherDaemon import HAHQFileWatcherDaemon
 from HAHQConfigGetter import HAHQConfigGetter
