@@ -36,7 +36,7 @@ class HAHQConfigPoster(object):
         request_data['agentHeartbeatTimestamp'] = time.time()
         if os.popen('service haproxy status').read() == 'haproxy is running.':
             request_data['haproxyHeartbeatTimestamp'] = request_data['agentHeartbeatTimestamp']
-        requests.patch(url, json=request_data)
+        requests.patch(url, json=request_data, headers={'X-Auth-Token': token})
 
     def stringify_file(self, file):
         """
