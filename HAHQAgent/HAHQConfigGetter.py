@@ -19,7 +19,7 @@ class HAHQConfigGetter(object):
         :param config_file_path: path to the HAProxy config file
         """
         self.config_file_path = config_file_path
-        response_data = requests.get(url).json()
+        response_data = requests.get(url, headers={'X-Auth-Token': token}).json()
         self.config_data = {'configHolder': response_data['configHolder']}
         self.config_timestamp = response_data['configTimestamp']
         self.config_string = HAHQConfigurator(config_data=self.config_data).get_config_string()
