@@ -22,7 +22,7 @@ class HAHQConfigPoster(object):
         if self.config_string:
             self.config_data = HAHQConfigurator(config_string=self.config_string).get_config_data()
         else:
-            self.config_data = {'configHolder': []}
+            self.config_data = {'config': []}
 
     def post_config(self, url, token):
         """
@@ -31,9 +31,11 @@ class HAHQConfigPoster(object):
         :param url: url of the server
         :param token: token for authentication
         """
-        request_data = self.config_data
-        request_data['configTimestamp'] = self.config_timestamp
-        request_data['agentHeartbeatTimestamp'] = time.time()
+        request_data = {
+            'configHolder': self.config_data,
+            'configTimestamp': self.config_timestamp,
+            'agentHeartbeatTimestamp': time.time(),
+        }
         if os.popen('service haproxy status').read() == 'haproxy is running.':
             request_data['haproxyHeartbeatTimestamp'] = request_data['agentHeartbeatTimestamp']
         requests.patch(url, json=request_data, headers={'X-Auth-Token': token})

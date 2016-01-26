@@ -86,7 +86,7 @@ class HAHQConfigurator(object):
 
         self.config_string = ''
 
-        for section in self.config_data['configHolder']:
+        for section in self.config_data['config']:
             self.config_string += section['section']['type'] + ' ' + section['section']['name'] + '\n'
 
             for value in section['values']:
@@ -105,7 +105,7 @@ class HAHQConfigurator(object):
         if not self.config_string:
             raise HAHQConfigurator.HAHQConfiguratorException('no config string set')
 
-        self.config_data = {'configHolder': []}
+        self.config_data = {'config': []}
 
         section = None
 
@@ -115,7 +115,7 @@ class HAHQConfigurator(object):
             if len(words) > 0 and words[0][0] != '#':
                 if words[0] in self.SECTION_KEYWORDS:
                     if section:
-                        self.config_data['configHolder'].append(section)
+                        self.config_data['config'].append(section)
 
                     section = {
                         'section': {
@@ -129,4 +129,4 @@ class HAHQConfigurator(object):
                         section['values'].append(' '.join(words))
 
         if section:
-            self.config_data['configHolder'].append(section)
+            self.config_data['config'].append(section)
