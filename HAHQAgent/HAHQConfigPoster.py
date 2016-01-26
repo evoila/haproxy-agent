@@ -16,7 +16,7 @@ class HAHQConfigPoster(object):
 
         :param config_file_path: the HAProxy config file path
         """
-        self.config_timestamp = os.stat(config_file_path).st_mtime
+        self.config_timestamp = int(os.stat(config_file_path).st_mtime * 1000)
         self.config_string = self.stringify_file(config_file_path)
 
         if self.config_string:
@@ -34,7 +34,7 @@ class HAHQConfigPoster(object):
         request_data = {
             'configHolder': self.config_data,
             'configTimestamp': self.config_timestamp,
-            'agentHeartbeatTimestamp': time.time(),
+            'agentHeartbeatTimestamp': int(round(time.time() * 1000)),
         }
         if os.popen('service haproxy status').read() == 'haproxy is running.':
             request_data['haproxyHeartbeatTimestamp'] = request_data['agentHeartbeatTimestamp']
