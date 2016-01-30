@@ -94,8 +94,6 @@ class HAHQConfigurator(object):
 
             self.config_string += '\n'
 
-        self.config_string = self.config_string[:(len(self.config_string) - 2)]
-
     def __build_config_data(self):
         """
         builds the config data from config string
