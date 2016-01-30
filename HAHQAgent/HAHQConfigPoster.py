@@ -36,7 +36,7 @@ class HAHQConfigPoster(object):
             'configTimestamp': self.config_timestamp,
             'agentHeartbeatTimestamp': int(round(time.time() * 1000)),
         }
-        if os.popen('service haproxy status').read() == 'haproxy is running.':
+        if os.popen('service haproxy status').read() == 'haproxy is running.\n':
             request_data['haproxyHeartbeatTimestamp'] = request_data['agentHeartbeatTimestamp']
         requests.patch(url, json=request_data, headers={'X-Auth-Token': token})
 
