@@ -3,11 +3,6 @@ class HAHQConfigurator(object):
     This class helps converting a config dict to a string which has the format of the HAProxy config file.
     Converting works bi-directional.
     """
-    class HAHQConfiguratorException(Exception):
-        """
-        this Exception is thrown for all kind of errors regarding the conversion
-        """
-        pass
 
     SECTION_KEYWORDS = [
         'global',
@@ -30,11 +25,7 @@ class HAHQConfigurator(object):
 
         :param config_data: dict with config data
         :param config_string: string in config file format
-        :raises HAHQConfigurator.HAHQConfiguratorException: is thrown in case neither config data nor config string is
-        supplied
         """
-        if not config_data and not config_string:
-            raise HAHQConfigurator.HAHQConfiguratorException('either config data or config string has to be supplied')
         self.config_data = config_data if config_data else None
         self.config_string = config_string if config_string else None
 
@@ -78,53 +69,47 @@ class HAHQConfigurator(object):
     def __build_config_string(self):
         """
         builds the config string from config data
-
-        :raises HAHQConfigurator.HAHQConfiguratorException: is thrown in case config data isn't set
         """
-        if not self.config_data:
-            raise HAHQConfigurator.HAHQConfiguratorException('no config data set')
-
         self.config_string = ''
 
-        for section in self.config_data['config']:
-            self.config_string += section['section']['type'] + ' ' + section['section']['name'] + '\n'
+        if self.config_data:
+            for section in self.config_data['config']:
+                self.config_string += section['section']['type'] + ' ' + section['section']['name'] + '\n'
 
-            for value in section['values']:
-                self.config_string += '\t' + value + '\n'
+                for value in section['values']:
+                    self.config_string += '\t' + value + '\n'
 
-            self.config_string += '\n'
+                self.config_string += '\n'
 
     def __build_config_data(self):
         """
         builds the config data from config string
-
-        :raises HAHQConfigurator.HAHQConfiguratorException: is thrown in case config string isn't set
         """
-        if not self.config_string:
-            raise HAHQConfigurator.HAHQConfiguratorException('no config string set')
+        if self.config_string:
+            self.config_data = {'config': []}
 
-        self.config_data = {'config': []}
+            section = None
 
-        section = None
+            for line in self.config_string.split('\n'):
+                words = line.split()
 
-        for line in self.config_string.split('\n'):
-            words = line.split()
+                if len(words) > 0 and words[0][0] != '#':
+                    if words[0] in self.SECTION_KEYWORDS:
+                        if section:
+                            self.config_data['config'].append(section)
 
-            if len(words) > 0 and words[0][0] != '#':
-                if words[0] in self.SECTION_KEYWORDS:
-                    if section:
-                        self.config_data['config'].append(section)
+                        section = {
+                            'section': {
+                                'type': words[0],
+                                'name': ' '.join(words[1:]),
+                            },
+                            'values': [],
+                        }
+                    else:
+                        if section:
+                            section['values'].append(' '.join(words))
 
-                    section = {
-                        'section': {
-                            'type': words[0],
-                            'name': ' '.join(words[1:]),
-                        },
-                        'values': [],
-                    }
-                else:
-                    if section:
-                        section['values'].append(' '.join(words))
-
-        if section:
-            self.config_data['config'].append(section)
+            if section:
+                self.config_data['config'].append(section)
+        else:
+            None
