@@ -1,6 +1,5 @@
 from HAHQHeartbeatDaemon import HAHQHeartbeatDaemon
 from HAHQMQTTClient import HAHQMQTTClient
-from HAHQFileWatcherDaemon import HAHQFileWatcherDaemon
 from HAHQConfigGetter import HAHQConfigGetter
 from HAHQConfigPoster import HAHQConfigPoster
 
@@ -83,12 +82,6 @@ class HAHQAgent(object):
             self.get_config
         ).connect()
 
-    def __start_file_watcher_daemon(self):
-        """
-        starts the HAHQFileWatcherDaemon
-        """
-        HAHQFileWatcherDaemon(self.config_file_path).start()
-
     def __start_heartbeat_daemon(self):
         """
         starts the HAHQHeartbeatDaemon
@@ -100,5 +93,4 @@ class HAHQAgent(object):
         starts the agent. This is blocking!
         """
         self.__start_heartbeat_daemon()
-        self.__start_file_watcher_daemon()
         self.__start_mqtt_client_loop()
