@@ -6,7 +6,7 @@ The original implementation is located under:
 
 - [HAProxyHQ/Agent](https://github.com/haproxyhq/agent) - This is the agent, which runs on every HAProxy instance and takes care of communication between the instance and the HAProxyHQ/Backend and applies settings, made by the user. Implemented in Python 2.7.
 
-##Installation
+##Install
 To install the agent on specific host you need to run the following steps:
 
 >sudo apt-get install python-pip
@@ -14,6 +14,8 @@ To install the agent on specific host you need to run the following steps:
 >git clone https://github.com/evoila/haproxy-agent
 
 >sudo ./setup
+
+## Configure
 
 When you have successfully pulled the dependencies from your endpoint the next step is to configure your config.py file. The default contents looks as follows:
 
@@ -40,6 +42,8 @@ MQTT_TOPIC = '/haproxyhq/agents/' + AGENT_ID
 # complete URL. There should be no need to change this!
 SERVER_URL = SERVER_ADDRESS + ':' + SERVER_PORT + '/' + SERVER_API_ENDPOINT + '/' + AGENT_ID + '/'
 ````
+
+## Run
 
 When you have completed to fill all relevant values, you can start the agent via
 
