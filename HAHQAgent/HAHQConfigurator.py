@@ -96,7 +96,7 @@ class HAHQConfigurator(object):
                 if len(words) > 0 and words[0][0] != '#':
                     if words[0] in self.SECTION_KEYWORDS:
                         if section:
-                            self.config_data['config'].append(section)
+                            self.config_data['sections'].append(section)
 
                         section = {
                             'section': {
