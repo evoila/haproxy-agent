@@ -32,7 +32,7 @@ class HAHQConfigPoster(object):
         :param token: token for authentication
         """
         request_data = {
-            'configHolder': self.config_data,
+            'haProxyConfig': self.config_data,
             'configTimestamp': self.config_timestamp,
             'agentHeartbeatTimestamp': int(round(time.time() * 1000)),
         }
