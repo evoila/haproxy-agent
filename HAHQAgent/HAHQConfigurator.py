@@ -73,7 +73,7 @@ class HAHQConfigurator(object):
         self.config_string = ''
 
         if self.config_data:
-            for section in self.config_data['config']:
+            for section in self.config_data['sections']:
                 self.config_string += section['section']['type'] + ' ' + section['section']['name'] + '\n'
 
                 for value in section['values']:
@@ -86,7 +86,7 @@ class HAHQConfigurator(object):
         builds the config data from config string
         """
         if self.config_string:
-            self.config_data = {'config': []}
+            self.config_data = {'sections': []}
 
             section = None
 
@@ -110,6 +110,6 @@ class HAHQConfigurator(object):
                             section['values'].append(' '.join(words))
 
             if section:
-                self.config_data['config'].append(section)
+                self.config_data['sections'].append(section)
         else:
             None
