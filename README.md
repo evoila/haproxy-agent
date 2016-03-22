@@ -6,15 +6,41 @@ The original implementation is located under:
 
 - [HAProxyHQ/Agent](https://github.com/haproxyhq/agent) - This is the agent, which runs on every HAProxy instance and takes care of communication between the instance and the HAProxyHQ/Backend and applies settings, made by the user. Implemented in Python 2.7.
 
-##HAProxyHQ/Backend/Introduction
-This is the HAProxyHQ/Backend. It takes care of managing all the HAProxyHQ/Agent instances by rolling out configs and monitoring their health, also it provides an REST API which is used by the HAProxyHQ/Frontend to retrieve the displayed information.
+##Installation
+To install the agent on specific host you need to run the following steps:
 
-##HAProxyHQ/Backend/Requirements
-You'll need to have a MongoDB and some kind of MQTT broker like Mosquitto/EMQTT running.
+>sudo apt-get install python-pip
 
-##HAProxyHQ/Backend/Setup
-Before you can get started, you'll need to add some information to the property files.
-The backend will initially create the database schema and insert some needed information to it.
+>git clone https://github.com/evoila/haproxy-agent
 
-All application settings are stored in:
->src/main/resources/application.yml
+>sudo ./setup
+
+When you have successfully pulled the dependencies from your endpoint the next step is to configure your config.py file. The default contents looks as follows:
+
+````python
+# the url and port of the server the HAProxyHQ is running on and the API endpoint for the config
+SERVER_ADDRESS = 'http://my.haproxyhq.backend'
+SERVER_PORT = '8080'
+SERVER_API_ENDPOINT = 'agents'
+
+# the ID of this agent and it's token, which the HAProxyHQ will need to identify and authenticate this agent
+AGENT_ID = ''
+AGENT_TOKEN = ''
+
+# the adress and port of the MQTT broker
+MQTT_BROKER_ADRESS = 'my.mqtt.broker'
+MQTT_BROKER_PORT = '1883'
+
+# the path of the HAProxy config, which the agent will manage
+HA_PROXY_CONFIG_PATH = '/etc/haproxy/haproxy.cfg'
+
+# the MQTT topic the agent will subscribe to. There should be no need to change this!
+MQTT_TOPIC = '/haproxyhq/agents/' + AGENT_ID
+
+# complete URL. There should be no need to change this!
+SERVER_URL = SERVER_ADDRESS + ':' + SERVER_PORT + '/' + SERVER_API_ENDPOINT + '/' + AGENT_ID + '/'
+````
+
+When you have completed to fill all relevant values, you can start the agent via
+
+>sudo ./agent
