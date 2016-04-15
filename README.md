@@ -9,7 +9,7 @@ The original implementation is located under:
 ##Install
 To install the agent on specific host you need to run the following steps:
 
->sudo apt-get install python-pip
+>sudo apt-get install python-pip -y
 
 >git clone https://github.com/evoila/haproxy-agent
 
