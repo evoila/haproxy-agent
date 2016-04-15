@@ -13,6 +13,8 @@ To install the agent on specific host you need to run the following steps:
 
 >git clone https://github.com/evoila/haproxy-agent
 
+>cd haproxy-agent
+
 >sudo ./setup
 
 ## Configure
