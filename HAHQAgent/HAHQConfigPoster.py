@@ -1,15 +1,18 @@
-import requests
 import os
 import time
+
+import requests
 
 from HAHQConfigurator import HAHQConfigurator
 
 
 class HAHQConfigPoster(object):
     """
-    this is a light helper class, to send the config data to a server specified in the config.py file, after converting
-    it to json from the HAProxy config file, using the HAHQConfigurator class
+    this is a light helper class, to send the config data to a server specified
+    in the config.py file, after converting it to json from the HAProxy config
+    file, using the HAHQConfigurator class
     """
+
     def __init__(self, config_file_path):
         """
         converts the given file to a config dict
@@ -20,9 +23,12 @@ class HAHQConfigPoster(object):
         self.config_string = self.stringify_file(config_file_path)
 
         if self.config_string:
-            self.config_data = HAHQConfigurator(config_string=self.config_string).get_config_data()
+            self.config_data = HAHQConfigurator(
+                config_string=self.config_string).get_config_data()
         else:
-            self.config_data = {'config': []}
+            self.config_data = {
+                'config': []
+                }
 
     def post_config(self, url, token):
         """
@@ -37,8 +43,11 @@ class HAHQConfigPoster(object):
             'agentHeartbeatTimestamp': int(round(time.time() * 1000)),
         }
         if os.popen('service haproxy status').read() == 'haproxy is running.\n':
-            request_data['haproxyHeartbeatTimestamp'] = request_data['agentHeartbeatTimestamp']
-        requests.patch(url, json=request_data, headers={'X-Auth-Token': token})
+            request_data['haproxyHeartbeatTimestamp'] = request_data[
+                'agentHeartbeatTimestamp']
+        requests.patch(url, json=request_data, headers={
+            'X-Auth-Token': token
+            })
 
     def stringify_file(self, file):
         """

@@ -1,5 +1,5 @@
-from threading import Thread
 import time
+from threading import Thread
 
 import HAHQConfiguredAgentInstance
 
@@ -11,6 +11,6 @@ class HAHQHeartbeatDaemon(Thread):
         self.agent = HAHQConfiguredAgentInstance.HAHQConfiguredAgentInstance()
 
     def run(self):
-        while(True):
+        while (True):
             self.agent.post_config()
             time.sleep(60)

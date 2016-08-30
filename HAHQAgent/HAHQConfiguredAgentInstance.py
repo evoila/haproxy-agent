@@ -1,11 +1,13 @@
-import config
 import HAHQAgent
+import config
 
 
 class HAHQConfiguredAgentInstance(object):
     """
-    this class is a wrapper for an instance of a HAHQAgent with the config from the config.py
+    this class is a wrapper for an instance of a HAHQAgent with the config from
+    the config.py
     """
+
     def __init__(self):
         self.agent = HAHQAgent.HAHQAgent(
             config.SERVER_URL,

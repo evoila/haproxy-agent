@@ -1,7 +1,12 @@
 class HAHQConfigurator(object):
     """
-    This class helps converting a config dict to a string which has the format of the HAProxy config file.
+    This class helps converting a config dict to a string which has the format
+    of the HAProxy config file.
+
     Converting works bi-directional.
+
+    SECTION_KEYWORDS is a list of keywords indicating the begin of a section in
+    the HAProxy config file
     """
 
     SECTION_KEYWORDS = [
@@ -16,12 +21,11 @@ class HAHQConfigurator(object):
         'namespace_list',
         'resolvers',
     ]
-    """a list of keywords indicating the begin of a section in the HAProxy config file"""
 
     def __init__(self, config_data=None, config_string=None):
         """
-        a HAHQConfigurator can be initialized either with a dict describing the config, or a string formatted like the
-        config file.
+        a HAHQConfigurator can be initialized either with a dict describing the
+        config, or a string formatted like the config file.
 
         :param config_data: dict with config data
         :param config_string: string in config file format
@@ -36,7 +40,8 @@ class HAHQConfigurator(object):
         return self.get_config_data()
 
     def __eq__(self, other):
-        if not isinstance(other, HAHQConfigurator) or self.get_config_data() != other.get_config_data():
+        if not isinstance(other, HAHQConfigurator) or \
+                self.get_config_data() != other.get_config_data():
             return False
 
         return True
@@ -46,7 +51,8 @@ class HAHQConfigurator(object):
 
     def get_config_string(self):
         """
-        returns the config as string and converts it to string, in case it's only available as a dict
+        returns the config as string and converts it to string, in case it's
+        only available as a dict
 
         :return: config string
         """
@@ -57,7 +63,8 @@ class HAHQConfigurator(object):
 
     def get_config_data(self):
         """
-        returns the config data as a dict and converts it to dict, in case it's only available as a string
+        returns the config data as a dict and converts it to dict, in case it's
+        only available as a string
 
         :return: config data
         """
@@ -74,7 +81,8 @@ class HAHQConfigurator(object):
 
         if self.config_data:
             for section in self.config_data['sections']:
-                self.config_string += section['section']['type'] + ' ' + section['section']['name'] + '\n'
+                self.config_string += section['section']['type'] + ' ' + \
+                                      section['section']['name'] + '\n'
 
                 for value in section['values']:
                     self.config_string += '\t' + value + '\n'
@@ -86,7 +94,9 @@ class HAHQConfigurator(object):
         builds the config data from config string
         """
         if self.config_string:
-            self.config_data = {'sections': []}
+            self.config_data = {
+                'sections': []
+            }
 
             section = None
 
@@ -111,5 +121,3 @@ class HAHQConfigurator(object):
 
             if section:
                 self.config_data['sections'].append(section)
-        else:
-            None

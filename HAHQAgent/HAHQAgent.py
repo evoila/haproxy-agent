@@ -8,6 +8,7 @@ class HAHQAgent(object):
     """
     this class wraps all the functionality of the HAProxyHQ/Agent into one class
     """
+
     def __init__(self,
                  server_url,
                  agent_id,
@@ -47,10 +48,12 @@ class HAHQAgent(object):
 
     def get_config(self, client=None, userdata=None, msg=None):
         """
-        retrieves the current config from the backend. In case the local config is newer than the one retrieved by the
-        backend, the local config is pushed to the server.
+        retrieves the current config from the backend. In case the local config
+        is newer than the one retrieved by the backend, the local config is
+        pushed to the server.
 
-        params are just dummies, so that this method can be called as an MQTT callback
+        params are just dummies, so that this method can be called as an MQTT
+        callback
         """
         config_getter = HAHQConfigGetter(
             self.server_url,
