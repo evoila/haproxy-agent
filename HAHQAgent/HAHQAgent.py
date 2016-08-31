@@ -1,7 +1,7 @@
-from HAHQHeartbeatDaemon import HAHQHeartbeatDaemon
-from HAHQMQTTClient import HAHQMQTTClient
 from HAHQConfigGetter import HAHQConfigGetter
 from HAHQConfigPoster import HAHQConfigPoster
+from HAHQHeartbeatDaemon import HAHQHeartbeatDaemon
+from HAHQRabbitMQClient import HAHQRabbitMQClient
 
 
 class HAHQAgent(object):
@@ -13,9 +13,9 @@ class HAHQAgent(object):
                  server_url,
                  agent_id,
                  agent_token,
-                 mqtt_broker_adress,
-                 mqtt_broker_port,
-                 mqtt_topic,
+                 rabbit_mq_host,
+                 rabbit_mq_port,
+                 rabbit_mq_exchange,
                  config_file_path):
         """
         initializes the agent with the configs needed
@@ -23,17 +23,17 @@ class HAHQAgent(object):
         :param server_url: the url to the HAProxyHQ/Backend
         :param agent_id: the ID of this agent
         :param agent_token: the token the agents needs for authentication
-        :param mqtt_broker_adress: the adress if the MQTT broker
-        :param mqtt_broker_port: the MQTT brokers port
-        :param mqtt_topic: the MQTT topic
+        :param rabbit_mq_host: the adress of the RabbitMQ server
+        :param rabbit_mq_port: the RabbitMQ servers port
+        :param rabbit_mq_exchange: the RabbitMQ exchange
         :param config_file_path: the path to the config file
         """
         self.server_url = server_url
         self.agent_id = agent_id
         self.agent_token = agent_token
-        self.mqtt_broker_adress = mqtt_broker_adress
-        self.mqtt_broker_port = mqtt_broker_port
-        self.mqtt_topic = mqtt_topic
+        self.rabbit_mq_host = rabbit_mq_host
+        self.rabbit_mq_port = rabbit_mq_port
+        self.rabbit_mq_exchange = rabbit_mq_exchange
         self.config_file_path = config_file_path
 
     def post_config(self):
@@ -52,7 +52,7 @@ class HAHQAgent(object):
         is newer than the one retrieved by the backend, the local config is
         pushed to the server.
 
-        params are just dummies, so that this method can be called as an MQTT
+        params are just dummies, so that this method can be called as an AMQ
         callback
         """
         config_getter = HAHQConfigGetter(
@@ -73,15 +73,15 @@ class HAHQAgent(object):
                     self.agent_token
                 )
 
-    def __start_mqtt_client_loop(self):
+    def __start_rabbit_mq_client_loop(self):
         """
-        starts the MQTT client in a loop
+        starts the RabbitMQ client in a loop
         """
-        HAHQMQTTClient(
+        HAHQRabbitMQClient(
             'haproxyhq/agent-' + self.agent_id,
-            self.mqtt_broker_adress,
-            self.mqtt_broker_port,
-            self.mqtt_topic,
+            self.rabbit_mq_host,
+            self.rabbit_mq_port,
+            self.rabbit_mq_exchange,
             self.get_config
         ).connect()
 
@@ -96,4 +96,4 @@ class HAHQAgent(object):
         starts the agent. This is blocking!
         """
         self.__start_heartbeat_daemon()
-        self.__start_mqtt_client_loop()
+        self.__start_rabbit_mq_client_loop()

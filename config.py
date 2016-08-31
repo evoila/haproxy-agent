@@ -9,15 +9,16 @@ SERVER_API_ENDPOINT = 'agents'
 AGENT_ID = ''
 AGENT_TOKEN = ''
 
-# the adress and port of the MQTT broker
-MQTT_BROKER_ADRESS = 'my.mqtt.broker'
-MQTT_BROKER_PORT = '1883'
+# the adress and port of the RabbitMQ server
+RABBIT_MQ_HOST = 'my.rabbitmq.server'
+RABBIT_MQ_PORT = '1883'
 
 # the path of the HAProxy config, which the agent will manage
 HA_PROXY_CONFIG_PATH = '/etc/haproxy/haproxy.cfg'
 
-# the MQTT topic the agent will subscribe to. There should be no need to change this!
-MQTT_TOPIC = '/haproxyhq/agents/' + AGENT_ID
+# the RabbitMQ exchange the agent will subscribe to. There should be no need to
+# change this!
+RABBIT_MQ_EXCHANGE = '/haproxyhq/agents/' + AGENT_ID
 
 # complete URL. There should be no need to change this!
 SERVER_URL = SERVER_ADDRESS + ':' + SERVER_PORT + '/' + SERVER_API_ENDPOINT \

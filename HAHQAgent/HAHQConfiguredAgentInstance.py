@@ -13,9 +13,9 @@ class HAHQConfiguredAgentInstance(object):
             config.SERVER_URL,
             config.AGENT_ID,
             config.AGENT_TOKEN,
-            config.MQTT_BROKER_ADRESS,
-            config.MQTT_BROKER_PORT,
-            config.MQTT_TOPIC,
+            config.RABBIT_MQ_HOST,
+            config.RABBIT_MQ_PORT,
+            config.RABBIT_MQ_EXCHANGE,
             config.HA_PROXY_CONFIG_PATH
         )
 
