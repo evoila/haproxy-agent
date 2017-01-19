@@ -15,7 +15,10 @@ class HAHQConfiguredAgentInstance(object):
             config.AGENT_TOKEN,
             config.RABBIT_MQ_HOST,
             config.RABBIT_MQ_PORT,
+            config.RABBIT_MQ_VIRTUAL_HOST,
             config.RABBIT_MQ_EXCHANGE,
+            config.RABBIT_MQ_USERNAME,
+            config.RABBIT_MQ_PASSWORD,
             config.HA_PROXY_CONFIG_PATH
         )
 

@@ -12,6 +12,9 @@ AGENT_TOKEN = ''
 # the adress and port of the RabbitMQ server
 RABBIT_MQ_HOST = 'my.rabbitmq.server'
 RABBIT_MQ_PORT = '1883'
+RABBIT_MQ_VIRTUAL_HOST = ''
+RABBIT_MQ_USERNAME = ''
+RABBIT_MQ_PASSOWRD = ''
 
 # the path of the HAProxy config, which the agent will manage
 HA_PROXY_CONFIG_PATH = '/etc/haproxy/haproxy.cfg'

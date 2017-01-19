@@ -15,7 +15,10 @@ class HAHQAgent(object):
                  agent_token,
                  rabbit_mq_host,
                  rabbit_mq_port,
+                 rabbit_mq_virtual_host,
                  rabbit_mq_exchange,
+                 rabbit_mq_username,
+                 rabbit_mq_password,
                  config_file_path):
         """
         initializes the agent with the configs needed
@@ -25,7 +28,10 @@ class HAHQAgent(object):
         :param agent_token: the token the agents needs for authentication
         :param rabbit_mq_host: the adress of the RabbitMQ server
         :param rabbit_mq_port: the RabbitMQ servers port
+        :param rabbit_mq_virtual_host: virtual host on RabbitMQ server
         :param rabbit_mq_exchange: the RabbitMQ exchange
+        :param rabbit_mq_username: username for the virtual host on RabbitMQ server
+        :param rabbit_mq_password: password for the virtual host on RabbitMQ server
         :param config_file_path: the path to the config file
         """
         self.server_url = server_url
@@ -33,7 +39,10 @@ class HAHQAgent(object):
         self.agent_token = agent_token
         self.rabbit_mq_host = rabbit_mq_host
         self.rabbit_mq_port = rabbit_mq_port
+        self.rabbit_mq_virtual_host = rabbit_mq_virtual_host
         self.rabbit_mq_exchange = rabbit_mq_exchange
+        self.rabbit_mq_username = rabbit_mq_username
+        self.rabbit_mq_password = rabbit_mq_password
         self.config_file_path = config_file_path
 
     def post_config(self):
@@ -81,7 +90,10 @@ class HAHQAgent(object):
             'haproxyhq/agent-' + self.agent_id,
             self.rabbit_mq_host,
             self.rabbit_mq_port,
+            self.rabbit_mq_virtual_host,
             self.rabbit_mq_exchange,
+            self.rabbit_mq_username,
+            self.rabbit_mq_password,
             self.get_config
         ).connect()
 
