@@ -1,25 +1,33 @@
+import ConfigParser
+import getopt
 import os
+import sys
 import time
-from sys import argv
 from threading import Thread
 
 import pika
 import requests
 
-import config
+HELP_MESSAGE = \
+    """haproxy-agent [--config-file=<agent.conf path>] [--push | --pull]'
+Usage:
+--config-file=    The path to the haproxyhq agent.conf location.
+                  Default is /etc/haproxyhq/agent.conf
+--push
+--pul             """
 
 
 def callback(channel=None, method=None, properties=None, body=None):
     """
-            retrieves the current config from the backend. In case the local config
-            is newer than the one retrieved by the backend, the local config is
-            pushed to the server.
+            retrieves the current config from the backend. In case the local
+            config is newer than the one retrieved by the backend, the local
+            config is pushed to the server.
 
             params are just dummies, so that this method can be called as an AMQ
             callback
             """
-    response_data = requests.get(SERVER_URL, headers={
-        'X-Auth-Token': AGENT_TOKEN
+    response_data = requests.get(__server_url, headers={
+        'X-Auth-Token': __agent_token
     }).json()
     config_data = response_data['haProxyConfig']
     config_timestamp = response_data['configTimestamp']
@@ -27,7 +35,7 @@ def callback(channel=None, method=None, properties=None, body=None):
         config_data=config_data).get_config_string()
     if config_timestamp > get_local_config_timestamp:
         if config_data != get_local_config_data:
-            with open(CONFIG_FILE_PATH, 'w') as config_file:
+            with open(__config_file_path, 'w') as config_file:
                 config_file.write(config_string)
     else:
         if config_data != get_local_config_data:
@@ -42,28 +50,28 @@ def connect_to_rabbit_mq():
     """
     credentials = None
 
-    if RABBIT_MQ_USERNAME is not None:
+    if __rabbit_mq_username is not None:
         credentials = pika.PlainCredentials(
-            username=RABBIT_MQ_USERNAME,
-            password=RABBIT_MQ_PASSWORD,
+            username=__rabbit_mq_username,
+            password=__rabbit_mq_password,
         )
     connection = pika.BlockingConnection(
         pika.ConnectionParameters(
-            host=RABBIT_MQ_HOST,
-            port=RABBIT_MQ_PORT,
-            virtual_host=RABBIT_MQ_VIRTUAL_HOST,
+            host=__rabbit_mq_host,
+            port=__rabbit_mq_port,
+            virtual_host=__rabbit_mq_virtual_host,
             credentials=credentials,
         )
     )
     channel = connection.channel()
-    channel.exchange_declare(exchange=RABBIT_MQ_EXCHANGE,
+    channel.exchange_declare(exchange=__rabbit_mq_exchange,
                              auto_delete=False,
                              type='direct')
     result = channel.queue_declare(exclusive=True)
     queue_name = result.method.queue
-    channel.queue_bind(exchange=RABBIT_MQ_EXCHANGE,
+    channel.queue_bind(exchange=__rabbit_mq_exchange,
                        queue=queue_name,
-                       routing_key=RABBIT_MQ_EXCHANGE)
+                       routing_key=__rabbit_mq_exchange)
     channel.basic_qos(prefetch_count=1)
     channel.basic_consume(consumer_callback=callback,
                           queue=queue_name, no_ack=True)
@@ -75,7 +83,7 @@ def get_local_config_data():
 
     :return: The content of the local haproxy.cfg
     """
-    config_string = stringify_file(CONFIG_FILE_PATH)
+    config_string = stringify_file(__config_file_path)
     if config_string:
         return HAHQConfigurator(config_string=config_string).get_config_data()
     else:
@@ -89,7 +97,7 @@ def get_local_config_timestamp():
 
     :return: The timestamp of last modification from the local haproxy.cfg
     """
-    return int(os.stat(CONFIG_FILE_PATH).st_mtime * 1000)
+    return int(os.stat(__config_file_path).st_mtime * 1000)
 
 
 class HAHQConfigurator(object):
@@ -227,6 +235,7 @@ class HAHQHeartbeatDaemon(Thread):
             post_config()
             time.sleep(60)
 
+
 def post_config():
     """
     sends the converted data to the server
@@ -243,8 +252,8 @@ def post_config():
     if os.popen('service haproxy status').read() == 'haproxy is running.\n':
         request_data['haproxyHeartbeatTimestamp'] = request_data[
             'agentHeartbeatTimestamp']
-    requests.patch(SERVER_URL, json=request_data, headers={
-        'X-Auth-Token': AGENT_TOKEN
+    requests.patch(__server_url, json=request_data, headers={
+        'X-Auth-Token': __agent_token
     })
 
 
@@ -259,22 +268,64 @@ def stringify_file(stringable_file):
         return config_file.read()
 
 
-if __name__ == '__main__':
+def main():
+    is_push = False
+    is_pull = False
+    agent_config_file_path = '/etc/haproxyhq/agent.conf'
     try:
-        SERVER_URL = config.SERVER_URL
-        AGENT_ID = config.AGENT_ID
-        AGENT_TOKEN = config.AGENT_TOKEN
-        RABBIT_MQ_HOST = config.RABBIT_MQ_HOST
-        RABBIT_MQ_PORT = config.RABBIT_MQ_PORT
-        RABBIT_MQ_VIRTUAL_HOST = config.RABBIT_MQ_VIRTUAL_HOST
-        RABBIT_MQ_EXCHANGE = config.RABBIT_MQ_EXCHANGE
-        RABBIT_MQ_USERNAME = config.RABBIT_MQ_USERNAME
-        RABBIT_MQ_PASSWORD = config.RABBIT_MQ_PASSWORD
-        CONFIG_FILE_PATH = config.HA_PROXY_CONFIG_PATH
+        opts, args = getopt.getopt(
+            args=sys.argv[1:],
+            shortopts='',
+            longopts=['config-file=', 'push', 'pull', 'help'])
+    except getopt.GetoptError as exception:
+        print(exception.msg)
+        print(HELP_MESSAGE)
+        sys.exit(2)
+    for opt, arg in opts:
+        if opt is '--help':
+            print(HELP_MESSAGE)
+            sys.exit()
+        elif opt in '--config-file':
+            agent_config_file_path = arg
+        elif opt in '--push':
+            is_push = True
+        elif opt in '--push':
+            is_pull = True
 
-        if '--push' in argv:
+    config = ConfigParser.RawConfigParser(allow_no_value=True)
+
+    config.readfp(file(agent_config_file_path))
+
+    __agent_id = config.get('agent', 'id')
+    global __agent_id
+    __agent_token = config.get('agent', 'token')
+    global __agent_token
+    __config_file_path = config.get('haproxy', 'config_file')
+    global __config_file_path
+    __rabbit_mq_host = config.get('rabbitmq', 'host')
+    global __rabbit_mq_host
+    __rabbit_mq_port = config.getint('rabbitmq', 'port')
+    global __rabbit_mq_port
+    __rabbit_mq_virtual_host = config.get('rabbitmq', 'host')
+    global __rabbit_mq_virtual_host
+    __rabbit_mq_exchange = config.get('rabbitmq', 'exchange')
+    global __rabbit_mq_exchange
+    __rabbit_mq_username = config.get('rabbitmq', 'username')
+    global __rabbit_mq_username
+    __rabbit_mq_password = config.get('rabbitmq', 'password')
+    global __rabbit_mq_password
+    server_address = config.get('server', 'address')
+    server_port = config.get('server', 'port')
+    server_api_endpoint = config.get('server', 'api_endpoint')
+    __server_url = \
+        server_address + ':' + server_port + '/' + \
+        server_api_endpoint + '/' + __agent_id
+    global __server_url
+
+    try:
+        if is_push:
             post_config()
-        elif '--pull' in argv:
+        elif is_pull:
             callback()
         else:
             HAHQHeartbeatDaemon().start()
@@ -282,3 +333,7 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         print 'HAProxyHQ/Agent stopped'
         exit(0)
+
+
+if __name__ == '__main__':
+    main()

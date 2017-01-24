@@ -3,3 +3,7 @@ virtualenv
 test.cfg
 config.py
 *.pyc
+.virtualenv
+HaProxy_HQ_Agent.egg-info
+build
+dist

@@ -9,44 +9,36 @@ The original implementation is located under:
 ##Install
 To install the agent on specific host you need to run the following steps:
 
->sudo apt-get install python-pip -y
-
->git clone https://github.com/evoila/haproxy-agent
-
->cd haproxy-agent
-
->sudo ./setup
+>python setup.py install
 
 ## Configure
 
-When you have successfully pulled the dependencies from your endpoint the next step is to configure your config.py file. The default contents looks as follows:
+When you have successfully pulled the dependencies from your endpoint the next step is to configure your configuration file etc/haproxyhq/agent.conf. The default contents looks as follows:
 
-````python
-# the url and port of the server the HAProxyHQ is running on and the API endpoint for the config
-SERVER_ADDRESS = 'http://my.haproxyhq.backend'
-SERVER_PORT = '8080'
-SERVER_API_ENDPOINT = 'agents'
+````ini
+[agent]
+id
+token
 
-# the ID of this agent and it's token, which the HAProxyHQ will need to identify and authenticate this agent
-AGENT_ID = ''
-AGENT_TOKEN = ''
+[haproxy]
+config_file = /etc/haproxy/haproxy.conf
 
-# the adress and port of the MQTT broker
-MQTT_BROKER_ADRESS = 'my.mqtt.broker'
-MQTT_BROKER_PORT = '1883'
+[rabbitmq]
+host = localhost
+port = 1883
+virtualhost = /
+username
+password
+exchange
 
-# the path of the HAProxy config, which the agent will manage
-HA_PROXY_CONFIG_PATH = '/etc/haproxy/haproxy.cfg'
-
-# the MQTT topic the agent will subscribe to. There should be no need to change this!
-MQTT_TOPIC = '/haproxyhq/agents/' + AGENT_ID
-
-# complete URL. There should be no need to change this!
-SERVER_URL = SERVER_ADDRESS + ':' + SERVER_PORT + '/' + SERVER_API_ENDPOINT + '/' + AGENT_ID + '/'
+[server]
+address = localhost
+port = 8080
+api_endpoint = agents
 ````
 
 ## Run
 
 When you have completed to fill all relevant values, you can start the agent via
 
->sudo ./agent
+>haproxy-agent [--config-file=<agent.conf path>] [--push | --pull]
