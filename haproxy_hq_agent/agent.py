@@ -242,7 +242,7 @@ def post_config():
 
     """
     config_timestamp = get_local_config_timestamp()
-    config_data = get_local_config_data
+    config_data = get_local_config_data()
 
     request_data = {
         'haProxyConfig': config_data,
@@ -289,7 +289,7 @@ def main():
             agent_config_file_path = arg
         elif opt in '--push':
             is_push = True
-        elif opt in '--push':
+        elif opt in '--pull':
             is_pull = True
 
     config = ConfigParser.RawConfigParser(allow_no_value=True)
