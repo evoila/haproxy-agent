@@ -311,7 +311,7 @@ def main():
     global __rabbit_mq_host
     __rabbit_mq_port = config.getint('rabbitmq', 'port')
     global __rabbit_mq_port
-    __rabbit_mq_virtual_host = config.get('rabbitmq', 'host')
+    __rabbit_mq_virtual_host = config.get('rabbitmq', 'virtualhost')
     global __rabbit_mq_virtual_host
     __rabbit_mq_exchange = config.get('rabbitmq', 'exchange')
     global __rabbit_mq_exchange
