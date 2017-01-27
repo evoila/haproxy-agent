@@ -41,6 +41,11 @@ def callback(channel=None, method=None, properties=None, body=None):
         if config_data != get_local_config_data:
             post_config()
     os.system('service haproxy reload')
+    channel.basic_publish(
+        exchange=__rabbit_mq_exchange,
+        routing_key=__rabbit_mq_exchange,
+        body='OK'
+    )
 
 
 def connect_to_rabbit_mq():
