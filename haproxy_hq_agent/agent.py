@@ -314,11 +314,14 @@ def main():
     global __rabbit_mq_username
     __rabbit_mq_password = config.get('rabbitmq', 'password')
     global __rabbit_mq_password
+    server_protocol = config.get('server', 'protocol')
     server_address = config.get('server', 'address')
     server_port = config.get('server', 'port')
     server_api_endpoint = config.get('server', 'api_endpoint')
     __server_url = \
-        server_address + ':' + server_port + '/' + \
+        server_protocol + '://' + \
+        server_address + ':' + \
+        server_port + '/' + \
         server_api_endpoint + '/' + __agent_id
     global __server_url
 
