@@ -72,14 +72,12 @@ def connect_to_rabbit_mq():
     channel.exchange_declare(exchange=__rabbit_mq_exchange,
                              auto_delete=False,
                              type='direct')
-    result = channel.queue_declare(exclusive=True)
-    queue_name = result.method.queue
     channel.queue_bind(exchange=__rabbit_mq_exchange,
-                       queue=queue_name,
+                       queue=__rabbit_mq_queue,
                        routing_key=__rabbit_mq_exchange)
     channel.basic_qos(prefetch_count=1)
     channel.basic_consume(consumer_callback=callback,
-                          queue=queue_name, no_ack=True)
+                          queue=__rabbit_mq_queue, no_ack=True)
     channel.start_consuming()
 
 
@@ -319,6 +317,8 @@ def main():
     global __rabbit_mq_username
     __rabbit_mq_password = config.get('rabbitmq', 'password')
     global __rabbit_mq_password
+    __rabbit_mq_queue = config.get('rabbitmq', 'queue')
+    global __rabbit_mq_queue
     server_protocol = config.get('server', 'protocol')
     server_address = config.get('server', 'address')
     server_port = config.get('server', 'port')
