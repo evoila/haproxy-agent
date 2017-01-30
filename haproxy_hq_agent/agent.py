@@ -33,12 +33,12 @@ def callback(channel=None, method=None, properties=None, body=None):
     config_timestamp = response_data['configTimestamp']
     config_string = HAHQConfigurator(
         config_data=config_data).get_config_string()
-    if config_timestamp > get_local_config_timestamp:
-        if config_data != get_local_config_data:
+    if config_timestamp > get_local_config_timestamp():
+        if config_data != get_local_config_data():
             with open(__config_file_path, 'w') as config_file:
                 config_file.write(config_string)
     else:
-        if config_data != get_local_config_data:
+        if config_data != get_local_config_data():
             post_config()
     os.system('service haproxy reload')
     channel.basic_publish(
