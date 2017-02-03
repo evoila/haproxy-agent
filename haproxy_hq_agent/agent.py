@@ -42,8 +42,8 @@ def callback(channel=None, method=None, properties=None, body=None):
             post_config()
     os.system('service haproxy reload')
     channel.basic_publish(
-        exchange=__rabbit_mq_exchange,
-        routing_key=__rabbit_mq_exchange,
+        exchange='',
+        routing_key=properties.reply_to,
         body='OK'
     )
 
