@@ -5,6 +5,9 @@ import sys
 import time
 from threading import Thread
 
+import json
+import urllib2
+
 import pika
 import requests
 
@@ -14,8 +17,49 @@ Usage:
 --config-file=    The path to the haproxyhq agent.conf location.
                   Default is /etc/haproxyhq/agent.conf
 --push
---pul             """
+--pull             """
 
+def get_agent_id():
+    """
+    function to get the id of the haproxy agent using a rest callback
+    """
+
+    headers = {
+        'content-type': 'application/json',
+        'X-Auth-Token': __agent_token
+    }
+
+    body = {
+        'name': 'cf_sb_haproxy_agent',
+        'description': 'HAProxy Agent for generating service keys',
+        'ip': '217.26.224.15',
+        'authToken': __agent_token
+    }
+
+    params = json.dumps(body).encode('utf8')
+
+    req = urllib2.Request(__server_url, data=params, headers=headers)
+
+    response = urllib2.urlopen(req)
+
+    resp_dict = json.loads(response.read().decode('utf8'))
+
+    href = resp_dict['links'][0]['href']
+
+    agent_id = href.split('/')[-1]
+
+    f = open('/etc/haproxyhq/agent.conf', 'r')
+    lines = f.readlines()
+    for index, line in enumerate(lines):
+        if line.startswith('id', 0, 3):
+            lines[index] = 'id = %s\n' % agent_id
+    f.close()
+
+    f = open('/etc/haproxyhq/agent.conf', 'w')
+    f.writelines(lines)
+    f.close()
+
+    return agent_id
 
 def callback(channel=None, method=None, properties=None, body=None):
     """
@@ -41,12 +85,14 @@ def callback(channel=None, method=None, properties=None, body=None):
         if config_data != get_local_config_data():
             post_config()
     os.system('service haproxy reload')
+    if channel.is_open == False:
+            print "Channel was closed!"
     channel.basic_publish(
-        exchange='',
-        routing_key=properties.reply_to,
-        body='OK'
-    )
-
+          exchange="",
+          routing_key=properties.reply_to,
+          body='OK'
+      )
+   # channel.basic_ack(delivery_tag = method.delivery_tag)
 
 def connect_to_rabbit_mq():
     """
@@ -76,6 +122,9 @@ def connect_to_rabbit_mq():
                        queue=__rabbit_mq_queue,
                        routing_key=__rabbit_mq_exchange)
     channel.basic_qos(prefetch_count=1)
+    print "Queue name is: " + __rabbit_mq_queue
+    print "Channel is open. Starting to listen for messages"
+    print ""
     channel.basic_consume(consumer_callback=callback,
                           queue=__rabbit_mq_queue, no_ack=True)
     channel.start_consuming()
@@ -234,10 +283,12 @@ class HAHQHeartbeatDaemon(Thread):
         self.setDaemon(True)
 
     def run(self):
-        while True:
-            post_config()
-            time.sleep(60)
-
+	local_timestamp = get_local_config_timestamp()
+	while True:
+	    if local_timestamp < get_local_config_timestamp():
+	        post_config()
+	        local_timestamp = get_local_config_timestamp()
+	    time.sleep(60)
 
 def post_config():
     """
@@ -258,6 +309,7 @@ def post_config():
     requests.patch(__server_url, json=request_data, headers={
         'X-Auth-Token': __agent_token
     })
+    print "Config file was edited locally. Send to server"
 
 
 def stringify_file(stringable_file):
@@ -329,6 +381,11 @@ def main():
         server_port + '/' + \
         server_api_endpoint + '/' + __agent_id
     global __server_url
+
+    if not __agent_id:
+        __agent_id = get_agent_id()
+	__server_url = __server_url + __agent_id
+	post_config()
 
     try:
         if is_push:
