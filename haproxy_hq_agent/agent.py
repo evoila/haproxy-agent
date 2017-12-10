@@ -117,7 +117,7 @@ def connect_to_rabbit_mq():
     channel = connection.channel()
     channel.exchange_declare(exchange=__rabbit_mq_exchange,
                              auto_delete=False,
-                             type='direct')
+                             exchange_type='direct')
     channel.queue_bind(exchange=__rabbit_mq_exchange,
                        queue=__rabbit_mq_queue,
                        routing_key=__rabbit_mq_exchange)
