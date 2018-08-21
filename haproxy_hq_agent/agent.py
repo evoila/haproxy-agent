@@ -79,7 +79,7 @@ def callback(channel=None, method=None, properties=None, body=None):
             """
     response_data = requests.get(__server_url, headers={
         'X-Auth-Token': __agent_token
-    }).json()
+    }, verify=not __server_disable_ssl_verification).json()
     config_data = response_data['haProxyConfig']
     config_timestamp = response_data['configTimestamp']
     config_string = HAHQConfigurator(
@@ -316,7 +316,7 @@ def post_config():
             'agentHeartbeatTimestamp']
     requests.patch(__server_url, json=request_data, headers={
         'X-Auth-Token': __agent_token
-    })
+    }, verify=not __server_disable_ssl_verification)
     print "Config file was edited locally. Send to server"
 
 
