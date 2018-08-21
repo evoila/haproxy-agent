@@ -7,6 +7,7 @@ from threading import Thread
 
 import json
 import urllib2
+import ssl
 
 import pika
 import requests
@@ -40,7 +41,13 @@ def get_agent_id():
 
     req = urllib2.Request(__server_url, data=params, headers=headers)
 
-    response = urllib2.urlopen(req)
+    ctx = None
+    if __server_disable_ssl_verification:
+        ctx = ssl.create_default_context()
+        ctx.check_hostname = False
+        ctx.verify_mode = ssl.CERT_NONE
+
+    response = urllib2.urlopen(req, context=ctx)
 
     resp_dict = json.loads(response.read().decode('utf8'))
 
@@ -348,7 +355,7 @@ def main():
         elif opt in '--pull':
             is_pull = True
 
-    config = ConfigParser.RawConfigParser(allow_no_value=True)
+    config = ConfigParser.SafeConfigParser({'disable_ssl_verification' : False}, allow_no_value=True)
 
     config.readfp(file(agent_config_file_path))
 
@@ -382,6 +389,8 @@ def main():
         server_port + '/' + \
         server_api_endpoint + '/' + __agent_id
     global __server_url
+    global __server_disable_ssl_verification
+    __server_disable_ssl_verification = config.getboolean('server', 'disable_ssl_verification')
 
     if not __agent_id:
         __agent_id = get_agent_id()
