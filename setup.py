@@ -11,7 +11,7 @@ setup(
     url='evoila.de',
     license='Apache-2.0',
     setup_requires=['setuptools>=17.1'],
-    install_requires=['pika', 'requests'],
+    install_requires=['pika<=0.11.2', 'requests'],
     packages=['haproxy_hq_agent'],
     entry_points={
         'console_scripts': ['haproxy-agent = '
