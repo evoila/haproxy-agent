@@ -77,6 +77,7 @@ def callback(channel=None, method=None, properties=None, body=None):
             params are just dummies, so that this method can be called as an AMQ
             callback
             """
+    print >> sys.stderr,  "___3____";
     response_data = requests.get(__server_url, headers={
         'X-Auth-Token': __agent_token
     }, verify=not __server_disable_ssl_verification).json()
@@ -89,17 +90,22 @@ def callback(channel=None, method=None, properties=None, body=None):
             with open(__config_file_path, 'w') as config_file:
                 config_file.write(config_string)
     else:
+
         if config_data != get_local_config_data():
             post_config()
-    os.system('service haproxy reload')
+    print >> sys.stderr,  "___2____"
+    os.system('/var/vcap/jobs/haproxy/bin/haproxy_ctl reload')
+    print >> sys.stderr,  "___1____"
     if channel.is_open == False:
-            print "Channel was closed!"
+            print >> sys.stderr, "Channel was closed!"
+    print >> sys.stderr,  properties.correlation_id
     channel.basic_publish(
           exchange="",
           routing_key=properties.reply_to,
+          properties=pika.BasicProperties(correlation_id = properties.correlation_id),
           body='OK'
       )
-   # channel.basic_ack(delivery_tag = method.delivery_tag)
+   #channel.basic_ack(delivery_tag = method.delivery_tag)
 
 def connect_to_rabbit_mq():
     """
@@ -311,7 +317,7 @@ def post_config():
         'configTimestamp': config_timestamp,
         'agentHeartbeatTimestamp': int(round(time.time() * 1000)),
     }
-    if os.popen('service haproxy status').read() == 'haproxy is running.\n':
+    if os.system('/var/vcap/jobs/haproxy/bin/haproxy_ctl status') == 0:
         request_data['haproxyHeartbeatTimestamp'] = request_data[
             'agentHeartbeatTimestamp']
     requests.patch(__server_url, json=request_data, headers={
